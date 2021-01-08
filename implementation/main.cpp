@@ -4,4 +4,5 @@
 int main()
 {
    DJ::BasicStreambuf< char, DJ::CharTraits< char > > sb;
+   sb.Sgetc();
 }

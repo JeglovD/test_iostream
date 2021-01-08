@@ -8,6 +8,8 @@ class BasicStreambuf
 public:
    typedef typename Traits::IntType IntType;
 
-   IntType Sgetc();
+   IntType Sgetc()
+   {
+   }
 };
 } // namespace DJ

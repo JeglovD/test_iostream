@@ -4,7 +4,6 @@ project( test-iostream )
 
 set( SOURCES
     implementation/main.cpp
-    implementation/streambuf.cpp
 )
 
 add_executable(
