@@ -1,5 +1,7 @@
 #pragma once
 
+namespace DJ
+{
 template< typename Elem, typename Traits >
 class BasicStreambuf
 {
@@ -8,3 +10,4 @@ public:
 
    IntType Sgetc();
 };
+} // namespace DJ
