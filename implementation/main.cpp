@@ -1,11 +1,8 @@
-#include "iosfwd.h"
-#include "streambuf.h"
+#include "sstream.h"
 
 #include <iostream>
 
 int main()
 {
-   DJ::BasicStreambuf< char, DJ::CharTraits< char > > sb;
-   auto a = sb.Sgetc();
-   std::cout << "a = " << a << std::endl;
+   DJ::BasicStringbuf< char > buff;
 }

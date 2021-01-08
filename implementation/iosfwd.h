@@ -4,6 +4,7 @@
 
 namespace DJ
 {
+// struct char_traits
 template< typename Elem >
 struct CharTraits
 {
