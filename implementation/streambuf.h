@@ -2,44 +2,26 @@
 
 namespace DJ
 {
+// class basic_streambuf
 template< typename Elem, typename Traits >
 class BasicStreambuf
 {
 public:
    typedef int Streamsize;
    typedef typename Traits::IntType IntType;
+
+   // Возвращает символ в текущей позиции без изменения текущей позиции
+   IntType Sgetc()
+   {
+      return GetNAvail() > 0 ? Traits::ToIntType( *PGet() ): Underflow();
+   }
+
+protected:
    BasicStreambuf()
    {
       Init();
    }
 
-private:
-   // Указатель начала буфера чтения
-   Elem* mPGetFirst;
-   // Указатель начала буфера записи
-   Elem* mPPutFirst;
-   // Указатель на указатель начала буфера чтения
-   Elem** mPPGetFirst;
-   // Указатель на указатель начала буфера записи
-   Elem** mPPPutFirst;
-   // Указатель текущей позиции в буфере чтения
-   Elem* mPGetNext;
-   // Указатель текущей позиции в буфере записи
-   Elem* mPPutNext;
-   // Указатель на указатель текущей позиции в буфере чтения
-   Elem** mPPGetNext;
-   // Указатель на указатель текущей позиции в буфере записи
-   Elem** mPPPutNext;
-   // Длина буфера чтения
-   int mGetCount;
-   // Длина буфера записи
-   int mPutCount;
-   // Указатель на длину буфера чтения
-   int* mPGetCount;
-   // Указатель на длину буфера записи
-   int* mPPutCount;
-
-protected:
    // Установка указателей для буфера чтения
    void SetGet( Elem* p_first, Elem* p_next, Elem* p_last )
    {
@@ -69,8 +51,9 @@ protected:
       SetPut( 0, 0 );
    }
 
-
-   Streamsize Gnavail() const
+   // _Gnavail()
+   // Посчитать количество доступных элементов в буфере чтения
+   Streamsize GetNAvail() const
    {
       return *mPPGetNext != 0 ? mGetCount: 0;
    }
@@ -88,13 +71,33 @@ protected:
       return Traits::Eof();
    }
 
-public:
-   typedef typename Traits::IntType IntType;
+private:
+   BasicStreambuf( const BasicStreambuf< Elem, Traits >& ) = delete;
+   BasicStreambuf< Elem, Traits>& operator=( const BasicStreambuf< Elem, Traits>& ) = delete;
 
-   // Возвращает символ в текущей позиции без изменения текущей позиции
-   IntType Sgetc()
-   {
-      return Gnavail() > 0 ? Traits::ToIntType( *PGet() ): Underflow();
-   }
+   // Указатель начала буфера чтения
+   Elem* mPGetFirst;
+   // Указатель начала буфера записи
+   Elem* mPPutFirst;
+   // Указатель на указатель начала буфера чтения
+   Elem** mPPGetFirst;
+   // Указатель на указатель начала буфера записи
+   Elem** mPPPutFirst;
+   // Указатель текущей позиции в буфере чтения
+   Elem* mPGetNext;
+   // Указатель текущей позиции в буфере записи
+   Elem* mPPutNext;
+   // Указатель на указатель текущей позиции в буфере чтения
+   Elem** mPPGetNext;
+   // Указатель на указатель текущей позиции в буфере записи
+   Elem** mPPPutNext;
+   // Длина буфера чтения
+   int mGetCount;
+   // Длина буфера записи
+   int mPutCount;
+   // Указатель на длину буфера чтения
+   int* mPGetCount;
+   // Указатель на длину буфера записи
+   int* mPPutCount;
 };
 } // namespace DJ
