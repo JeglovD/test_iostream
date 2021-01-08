@@ -3,6 +3,7 @@
 #include "streambuf.h"
 
 #include "iosfwd.h"
+#include "xiosbase.h"
 
 namespace DJ
 {
@@ -16,5 +17,10 @@ namespace DJ
 template< typename Elem, typename Traits = DJ::CharTraits< Elem >/*, typename Alloc*/ >
 class BasicStringbuf: public BasicStreambuf< Elem, Traits >
 {
+public:
+   explicit BasicStringbuf( IOSBase::OpenMode /*ios_base::openmode*/ mode = IOSBase::omIN /*ios_base::in*/ | IOSBase::omOUT /*ios_base::out*/ )
+   {
+      Init( 0, 0, _Getstate( mode ) );
+   }
 };
 } // namespace DJ
