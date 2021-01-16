@@ -4,6 +4,10 @@
 
 #include "iosfwd.h"
 #include "xiosbase.h"
+#include "xmemory.h"
+#include "xstring.h"
+
+#include <string>
 
 namespace DJ
 {
@@ -14,13 +18,14 @@ namespace DJ
 
 
 // class basic_stringbuf
-template< typename Elem, typename Traits = DJ::CharTraits< Elem >/*, typename Alloc*/ >
-class BasicStringbuf: public BasicStreambuf< Elem, Traits >
+template< typename Elem, typename Traits = DJ::CharTraits< Elem >, typename Alloc = DJ::Allocator< Elem > >
+class BasicStringBuf: public BasicStreamBuf< Elem, Traits >
 {
 public:
-   explicit BasicStringbuf( IOSBase::OpenMode /*ios_base::openmode*/ mode = IOSBase::omIN /*ios_base::in*/ | IOSBase::omOUT /*ios_base::out*/ )
+   typedef std::basic_string< Elem, Traits, Alloc > MyStr;
+
+   MyStr str() const
    {
-      Init( 0, 0, _Getstate( mode ) );
    }
 };
 } // namespace DJ

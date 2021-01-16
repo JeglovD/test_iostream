@@ -4,7 +4,7 @@ namespace DJ
 {
 // class basic_streambuf
 template< typename Elem, typename Traits >
-class BasicStreambuf
+class BasicStreamBuf
 {
 public:
    typedef int Streamsize;
@@ -17,7 +17,7 @@ public:
    }
 
 protected:
-   BasicStreambuf()
+   BasicStreamBuf()
    {
       Init();
    }
@@ -72,8 +72,8 @@ protected:
    }
 
 private:
-   BasicStreambuf( const BasicStreambuf< Elem, Traits >& ) = delete;
-   BasicStreambuf< Elem, Traits>& operator=( const BasicStreambuf< Elem, Traits>& ) = delete;
+   BasicStreamBuf( const BasicStreamBuf< Elem, Traits >& ) = delete;
+   BasicStreamBuf< Elem, Traits>& operator=( const BasicStreamBuf< Elem, Traits>& ) = delete;
 
    // Указатель начала буфера чтения
    Elem* mPGetFirst;
