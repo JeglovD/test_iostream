@@ -1,5 +1,6 @@
 #pragma once
 
+#include "iosfwd.h"
 #include "xutility.h"
 
 namespace DJ
@@ -15,6 +16,8 @@ class StringVal: public StringBase
 {
 protected:
    typedef typename AllocatorIn::template Rebind< T >::Other Allocator;
+
+   Allocator mAllocator;
 };
 
 // class basic_string
@@ -24,7 +27,7 @@ class BasicString: public StringVal< Elem, AllocatorIn >
 public:
    typedef typename StringVal< Elem, AllocatorIn >::Allocator::SizeType SizeType;
 
-   const unsigned int BUF_SIZE{ 16 / sizeof ( Elem ) < 1 ? 1 : 16 / sizeof( Elem ) };
+   static const unsigned int BUFFER_SIZE{ 16 / ( sizeof ( Elem ) < 1 ? 1 : 16 / sizeof( Elem ) ) };
 
 private:
    // Текущая длина строки
@@ -32,20 +35,42 @@ private:
    // Текущее хранилище, зарезервированное для строки
    SizeType mReserve;
 
+   // Хранилище для маленького буфера или указателя на основной
+   union SmallBufferOrPointer
+   {
+      Elem buffer[ BUFFER_SIZE ];
+      Elem* p_buffer;
+   } mSmallBufferOrPointer;
+
    // initialize buffer, deallocating any storage
    // void __CLR_OR_THIS_CALL _Tidy(bool _Built = false,	size_type _Newsize = 0)
    void Tidy( bool build = false, SizeType new_size = 0 )
    {
       if( build )
-         if( BUF_SIZE <= mReserve )
+         if( BUFFER_SIZE <= mReserve )
          {	// копируем все остатки в маленький буфер и освобождаем основной
-            Elem* ptr = _Bx._Ptr;
-            if (0 < _Newsize)
-               _Traits_helper::copy_s<_Traits>(_Bx._Buf, _BUF_SIZE, _Ptr, _Newsize);
-            _Mybase::_Alval.deallocate(_Ptr, _Myres + 1);
+            Elem* p_buffer = mSmallBufferOrPointer.p_buffer;
+            if( new_size > 0 )
+               traits_helper::CopyS< Traits >( mSmallBufferOrPointer.buffer, BUFFER_SIZE, p_buffer, new_size );
+            StringVal< Elem, AllocatorIn >::mAllocator.Deallocate( p_buffer, mReserve + 1 );
          }
-      _Myres = _BUF_SIZE - 1;
-      _Eos(_Newsize);
+      mReserve = BUFFER_SIZE - 1;
+      Eos( new_size );
+   }
+
+protected:
+   // Определить текущий указатель в буфере для изменяемой строки
+   // _Elem *__CLR_OR_THIS_CALL _Myptr()
+   Elem* Pointer()
+   {
+      return BUFFER_SIZE <= mReserve ? mSmallBufferOrPointer.p_buffer: mSmallBufferOrPointer.buffer;
+   }
+
+   // Установка новой длинны и null терминатора
+   // void __CLR_OR_THIS_CALL _Eos(size_type _Newsize)
+   void Eos( SizeType new_size )
+   {
+      Traits::Assign( Pointer()[ mSize = new_size ], Elem{} );
    }
 
 public:
