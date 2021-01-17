@@ -27,7 +27,9 @@ class BasicString: public StringVal< Elem, AllocatorIn >
 public:
    typedef typename StringVal< Elem, AllocatorIn >::Allocator::SizeType SizeType;
 
-   static const unsigned int BUFFER_SIZE{ 16 / ( sizeof ( Elem ) < 1 ? 1 : 16 / sizeof( Elem ) ) };
+   // length of internal buffer, [1, 16]
+   // enum { _BUF_SIZE
+   static const int BUFFER_SIZE{ ( 16 / sizeof ( Elem ) ) < 1 ? 1 : ( 16 / sizeof( Elem ) ) };
 
 private:
    // Текущая длина строки
@@ -85,6 +87,13 @@ public:
    SizeType Size() const
    {
       return mSize;
+   }
+
+   // return current length of allocated storage
+   // size_type __CLR_OR_THIS_CALL capacity() const
+   SizeType Capacity() const
+   {
+      return mReserve;
    }
 };
 } // namespace DJ
