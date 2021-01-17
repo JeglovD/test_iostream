@@ -1,7 +1,16 @@
 #pragma once
 
+#include <crtdefs.h>
+
 namespace DJ
 {
+// specify standard memory model
+#ifndef FARQ
+#define FARQ
+#define PDFT ptrdiff_t
+#define SIZT size_t
+#endif
+
 // struct _Allocator_base
 template< typename T >
 struct AllocatorBase
@@ -10,15 +19,18 @@ struct AllocatorBase
    typedef T ValueType;
 };
 
-// class allocator
 template< typename T >
+// class allocator
 class Allocator: public AllocatorBase< T >
 {
 public:
    typedef unsigned int SizeType;
+   typedef PDFT DifferenceType;
+   typedef const ValueType* ConstPointer;
+   typedef const ValueType& ConstReference;
 
    template< typename T >
-
+   // struct rebind
    struct Rebind
    {
       typedef Allocator< T > Other;
